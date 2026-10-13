@@ -20,12 +20,14 @@ function redisStore(): Store | null {
   const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
   if (!url || !token) return null;
   const r = new Redis({ url, token });
+  // 심리서사분석 사이트와 같은 저장소를 함께 써도 서로 덮어쓰지 않도록 모든 키 앞에 이름표를 붙인다.
+  const P = (k: string) => `jungle:${k}`;
   return {
-    get: async <T,>(k: string) => (await r.get<T>(k)) ?? null,
-    set: async (k, v) => { await r.set(k, v); },
-    del: async (k) => { await r.del(k); },
-    lpush: async (k, v) => { await r.lpush(k, v); },
-    lrange: async (k, a, b) => (await r.lrange<string>(k, a, b)) ?? [],
+    get: async <T,>(k: string) => (await r.get<T>(P(k))) ?? null,
+    set: async (k, v) => { await r.set(P(k), v); },
+    del: async (k) => { await r.del(P(k)); },
+    lpush: async (k, v) => { await r.lpush(P(k), v); },
+    lrange: async (k, a, b) => (await r.lrange<string>(P(k), a, b)) ?? [],
   };
 }
 
