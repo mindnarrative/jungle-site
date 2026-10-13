@@ -1,0 +1,25 @@
+{
+  "name": "jungle-site",
+  "version": "0.1.0",
+  "private": true,
+  "description": "이야기 정글 — 아이들의 정글·논글이 읽히는 서가",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "build-seeds": "python3 scripts/build-seeds.py"
+  },
+  "dependencies": {
+    "@upstash/redis": "1.39.0",
+    "next": "15.5.27",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "@types/react": "19.2.2",
+    "typescript": "^5.7.3"
+  },
+  "overrides": { "postcss": "8.5.28" }
+}
