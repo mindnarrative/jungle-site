@@ -45,9 +45,23 @@ function fileStore(): Store {
   };
 }
 
+// Vercel 에서 저장소가 아직 연결되지 않았을 때: 읽기는 빈 값으로 돌려 사이트가 열리게 하고, 쓰기만 막는다.
+const NOT_READY = '저장소(Upstash Redis)가 아직 연결되지 않았습니다. Vercel의 Storage 탭에서 연결한 뒤 Redeploy해 주세요.';
+function emptyStore(): Store {
+  return {
+    get: async () => null,
+    set: async () => { throw new Error(NOT_READY); },
+    del: async () => { throw new Error(NOT_READY); },
+    lpush: async () => { throw new Error(NOT_READY); },
+    lrange: async () => [],
+  };
+}
+
+export const storeReady = () => Boolean(redisStore()) || !process.env.VERCEL;
+
 export function store(): Store {
   const r = redisStore();
   if (r) return r;
-  if (process.env.VERCEL) throw new Error('STORE_MISSING');
+  if (process.env.VERCEL) return emptyStore();
   return fileStore();
 }

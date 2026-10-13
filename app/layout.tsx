@@ -1,3 +1,4 @@
+import { storeReady } from '@/lib/store';
 import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
 import './globals.css';
@@ -38,7 +39,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <Nav />
           </div>
         </header>
-        <main className="wrap">{children}</main>
+        <main className="wrap">
+          {(!storeReady() || !process.env.SESSION_SECRET) && (
+            <p className="notice" style={{ marginBottom: 24 }}>
+              사이트 설정이 아직 끝나지 않았습니다.{!storeReady() && ' 저장소(Upstash Redis)를 연결해 주세요.'}{!process.env.SESSION_SECRET && ' 환경 변수 SESSION_SECRET을 넣어 주세요.'} 넣은 뒤에는 Redeploy가 필요합니다.
+            </p>
+          )}
+          {children}
+        </main>
         <footer>
           <div className="wrap foot">
             <div>
